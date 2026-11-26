@@ -70,19 +70,8 @@ LOGGER = logging.getLogger("traffic.api")
 
 @lru_cache(maxsize=8)
 def get_analyzer(confidence: float = DEFAULT_CONFIDENCE, image_size: int = DEFAULT_IMAGE_SIZE):
-    """Return a reusable analyzer (the YOLO weights are shared process-wide).
-
-    One dummy inference is run so the first real request does not pay the
-    graph warm-up cost and report an inflated processing time.
-    """
-    import numpy as np
-
-    analyzer = TrafficAnalyzer(confidence=confidence, image_size=image_size)
-    try:
-        analyzer.detector.detect(np.zeros((720, 1280, 3), dtype=np.uint8))
-    except Exception as error:  # a warm-up failure must not hide the real request
-        LOGGER.warning("Detector warm-up failed: %s: %s", type(error).__name__, error)
-    return analyzer
+    """Return a reusable analyzer without performing a memory-heavy warm-up."""
+    return TrafficAnalyzer(confidence=confidence, image_size=image_size)
 
 
 def get_estimator():
@@ -245,6 +234,7 @@ def _shape_detections(analysis, width, height):
 
 _SNAPSHOT_CACHE: dict[str, dict] = {}
 _CACHE_LOCK = threading.Lock()
+_INFERENCE_LOCK = threading.Lock()
 _CACHE_LIMIT = 64
 
 
@@ -259,10 +249,13 @@ def analyse_frame(video_id: str, timestamp: float, confidence: float, image_size
     path = resolve_video(video_id)
     frame, info = read_frame(path, timestamp)
 
-    analyzer = get_analyzer(round(float(confidence), 2), int(image_size))
-    started = time.perf_counter()
-    analysis = analyzer.analyze_frame(frame)
-    processing_ms = round((time.perf_counter() - started) * 1000, 1)
+    # The direct frame endpoint and background job share this lock.
+    # Only one request may load/use the YOLO model at a time.
+    with _INFERENCE_LOCK:
+        analyzer = get_analyzer(round(float(confidence), 2), int(image_size))
+        started = time.perf_counter()
+        analysis = analyzer.analyze_frame(frame)
+        processing_ms = round((time.perf_counter() - started) * 1000, 1)
 
     estimator = get_estimator()
     congestion = estimator.estimate(analysis["lanes"])

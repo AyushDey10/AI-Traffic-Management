@@ -12,6 +12,17 @@ from pathlib import Path
 import cv2
 from ultralytics import YOLO
 
+# Keep CPU thread usage low on memory-limited deployment instances.
+import torch
+
+torch.set_num_threads(1)
+try:
+    torch.set_num_interop_threads(1)
+except RuntimeError:
+    pass
+
+cv2.setNumThreads(1)
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL_PATH = PROJECT_ROOT / "yolov8n.pt"
 
@@ -39,7 +50,7 @@ MIN_IMAGE_SIZE = 320
 MAX_IMAGE_SIZE = 2560
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=1)
 def _load_model(model_path: str) -> YOLO:
     """Load a YOLO checkpoint once per process (weights are shared)."""
     path = Path(model_path)
