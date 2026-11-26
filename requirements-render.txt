@@ -1,4 +1,11 @@
-﻿# Render API dependencies — Python 3.12
+﻿
+# Install CPU-only PyTorch from the official PyTorch CPU wheel index
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
+
+# API
 fastapi==0.165.0
 uvicorn==0.54.0
 python-multipart==0.0.34
