@@ -49,7 +49,7 @@ for directory in (VIDEO_DIR, PROCESSED_DIR, PREVIEW_DIR, UPLOAD_DIR):
     directory.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_CONFIDENCE = 0.10
-DEFAULT_IMAGE_SIZE = 1920
+DEFAULT_IMAGE_SIZE = 640
 PREVIEW_WIDTH = 1280
 MAX_UPLOAD_BYTES = 250 * 1024 * 1024
 VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv"}

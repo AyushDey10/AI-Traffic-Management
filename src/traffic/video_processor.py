@@ -57,7 +57,7 @@ class FFmpegH264Writer:
 
 
 class TrafficVideoProcessor:
-    def __init__(self, confidence=0.15, image_size=1920, frame_skip=1, max_width=1280):
+    def __init__(self, confidence=0.15, image_size=640, frame_skip=1, max_width=1280):
         if frame_skip < 1:
             raise ValueError("frame_skip must be at least 1")
         if max_width < 320:

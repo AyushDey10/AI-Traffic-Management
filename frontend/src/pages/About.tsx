@@ -9,7 +9,7 @@ const PIPELINE = [
   {
     step: "02",
     title: "YOLOv8n detection",
-    body: "Stock COCO weights detect cars, motorcycles, buses and trucks at 1920 px inference size on CPU.",
+    body: "Stock COCO weights detect cars, motorcycles, buses and trucks at 640 px inference size on CPU.",
   },
   {
     step: "03",
@@ -88,7 +88,7 @@ export default function About() {
           <div className="rounded-lg border border-border/70 bg-panel/40 p-4">
             <p className="font-mono text-lg text-ink">~200 ms</p>
             <p className="mt-1 text-xs text-muted">
-              steady-state CPU inference per 4K frame at 1920 px
+              original local benchmark: CPU inference per 4K frame at 1920 px
             </p>
           </div>
         </div>
