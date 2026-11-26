@@ -1,0 +1,21 @@
+# Core detection and vision (CPU inference)
+ultralytics==8.4.218
+opencv-python==5.1.0.95
+numpy==2.5.5
+pillow==13.0.0
+
+# HTTP API
+fastapi==0.165.0
+uvicorn==0.54.0
+
+# Video encoding (bundled FFmpeg binary, no system install needed)
+imageio-ffmpeg==0.8.1
+
+# Legacy Streamlit dashboard
+streamlit==1.67.0
+pandas==3.1.1
+plotly==7.2.0
+
+# Tests
+pytest==9.2.0
+httpx==0.28.1

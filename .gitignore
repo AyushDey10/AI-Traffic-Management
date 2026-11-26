@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Generated media (regenerate with scripts/regenerate_processed_video.py)
+data/processed/previews/
+data/processed/*_detected*.mp4
+data/uploads/
+
+# Local scratch
+_work/
+*.log
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Secrets
+.env
+.dev.vars
+
+# Large local source-video copies (keep the CRF28 deployment sample)
+data/videos/traffic.mp4
+data/videos/traffic_compressed.mp4
+
+# Local backup snapshots
+app_backup_before_persistence.py
+src/traffic/*_backup.py
