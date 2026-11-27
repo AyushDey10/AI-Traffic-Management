@@ -24,7 +24,7 @@ def empty_lane_bucket():
 class TrafficAnalyzer:
     """Run detection on a frame and split the boxes across the four approaches."""
 
-    def __init__(self, confidence=0.10, image_size=640, device="cpu"):
+    def __init__(self, confidence=0.10, image_size=1280, device="cpu"):
         self.detector = VehicleDetector(
             confidence=confidence,
             image_size=image_size,

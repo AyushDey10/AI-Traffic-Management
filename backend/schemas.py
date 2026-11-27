@@ -11,7 +11,7 @@ class FrameAnalysisRequest(BaseModel):
     video_id: str = Field(default="traffic_compressed_crf28.mp4", description="File name from /api/videos")
     timestamp: float = Field(default=10.0, ge=0, le=3600, description="Seek position in seconds")
     confidence: float = Field(default=0.10, gt=0.0, le=1.0)
-    image_size: int = Field(default=640, ge=320, le=2560)
+    image_size: int = Field(default=1280, ge=320, le=2560)
 
 
 class AnalysisJobRequest(BaseModel):
@@ -19,7 +19,7 @@ class AnalysisJobRequest(BaseModel):
     interval_seconds: float = Field(default=5.0, ge=0.5, le=60)
     limit: int = Field(default=8, ge=1, le=40)
     confidence: float = Field(default=0.10, gt=0.0, le=1.0)
-    image_size: int = Field(default=640, ge=320, le=2560)
+    image_size: int = Field(default=1280, ge=320, le=2560)
 
 
 class SimulationRequest(BaseModel):

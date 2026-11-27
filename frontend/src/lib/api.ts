@@ -261,15 +261,19 @@ export const api = {
   config: () => request<Record<string, unknown>>("/api/config"),
   videos: () => request<{ count: number; videos: VideoInfo[] }>("/api/videos"),
 
-  analyseFrame: (payload: {
-    video_id: string;
-    timestamp: number;
-    confidence?: number;
-    image_size?: number;
-  }) =>
+  analyseFrame: (
+    payload: {
+      video_id: string;
+      timestamp: number;
+      confidence?: number;
+      image_size?: number;
+    },
+    options?: { signal?: AbortSignal },
+  ) =>
     request<FrameSnapshot>("/api/analysis/frame", {
       method: "POST",
       body: JSON.stringify(payload),
+      signal: options?.signal,
     }),
 
   startJob: (payload: {

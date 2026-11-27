@@ -35,7 +35,7 @@ VEHICLE_CLASSES = {
 
 # CPU inference is the supported configuration for this project.
 DEFAULT_CONFIDENCE = 0.10
-DEFAULT_IMAGE_SIZE = 640
+DEFAULT_IMAGE_SIZE = 1280
 DEFAULT_DEVICE = "cpu"
 
 # BGR colours used to draw each class when ultralytics' own plot is not used.

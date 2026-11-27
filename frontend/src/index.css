@@ -41,7 +41,7 @@ body::before {
 
 @layer components {
   .card {
-    @apply rounded-xl border border-border/80 bg-card/80 backdrop-blur-sm;
+    @apply rounded-2xl border border-border/70 bg-card/75 backdrop-blur-sm;
   }
 
   .card-pad {
@@ -57,7 +57,7 @@ body::before {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-primary {
@@ -83,6 +83,18 @@ body::before {
 
 input[type="range"] {
   accent-color: #00d5ff;
+  height: 1.5rem;
+}
+
+input[type="range"]:focus-visible,
+select:focus-visible,
+input[type="file"]:focus-visible {
+  outline: 2px solid #00d5ff;
+  outline-offset: 2px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
 }
 
 ::-webkit-scrollbar {

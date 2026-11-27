@@ -49,7 +49,7 @@ for directory in (VIDEO_DIR, PROCESSED_DIR, PREVIEW_DIR, UPLOAD_DIR):
     directory.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_CONFIDENCE = 0.10
-DEFAULT_IMAGE_SIZE = 640
+DEFAULT_IMAGE_SIZE = 1280
 PREVIEW_WIDTH = 1280
 MAX_UPLOAD_BYTES = 250 * 1024 * 1024
 VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv"}
@@ -144,31 +144,50 @@ def resolve_video(video_id: str) -> Path:
 
 
 def list_videos() -> list[dict]:
-    videos = []
+    """Catalogue the bundled videos plus any uploaded ones.
 
-    if not VIDEO_DIR.exists():
-        return videos
+    Uploads live in UPLOAD_DIR and are resolved by the same endpoints, so they
+    belong in the catalogue too; otherwise an uploaded file is stored but can
+    never be selected.
+    """
+    videos: list[dict] = []
+    seen: set[str] = set()
 
-    for path in sorted(
-        VIDEO_DIR.iterdir(),
-        key=lambda item: (
-            item.name != "traffic_compressed_crf28.mp4",
-            item.name.lower(),
-        ),
-    ):
-        if path.suffix.lower() not in VIDEO_EXTENSIONS:
-            continue
-        try:
-            info = probe_video(path)
-        except (ValueError, FileNotFoundError):
-            continue
+    directories = []
+    if VIDEO_DIR.exists():
+        directories.append(
+            (
+                VIDEO_DIR,
+                sorted(
+                    VIDEO_DIR.iterdir(),
+                    key=lambda item: (
+                        item.name != "traffic_compressed_crf28.mp4",
+                        item.name.lower(),
+                    ),
+                ),
+            )
+        )
+    if UPLOAD_DIR.exists():
+        directories.append((UPLOAD_DIR, sorted(UPLOAD_DIR.iterdir(), key=lambda item: item.name.lower())))
 
-        processed = _processed_path_for(path.stem)
-        info["has_processed_video"] = bool(processed)
-        info["processed_filename"] = processed.name if processed else None
-        info["source_url"] = f"/api/videos/{path.name}/source"
-        info["processed_url"] = f"/api/videos/{path.name}/processed" if processed else None
-        videos.append(info)
+    for directory, paths in directories:
+        for path in paths:
+            if path.suffix.lower() not in VIDEO_EXTENSIONS or path.name in seen:
+                continue
+            try:
+                info = probe_video(path)
+            except (ValueError, FileNotFoundError):
+                continue
+
+            seen.add(path.name)
+            processed = _processed_path_for(path.stem)
+            info["has_processed_video"] = bool(processed)
+            info["processed_filename"] = processed.name if processed else None
+            info["source_url"] = f"/api/videos/{path.name}/source"
+            info["processed_url"] = f"/api/videos/{path.name}/processed" if processed else None
+            if directory == UPLOAD_DIR:
+                info["stored_in"] = "data/uploads"
+            videos.append(info)
 
     return videos
 

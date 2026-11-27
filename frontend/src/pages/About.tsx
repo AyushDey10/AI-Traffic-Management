@@ -1,25 +1,73 @@
-import { Card, Note, PageHeader } from "../components/ui";
+import { Callout, Card, Explain, Icon, Note, PageHeader, StepCard } from "../components/ui";
 
-const PIPELINE = [
+const STEPS = [
   {
-    step: "01",
-    title: "Frame extraction",
-    body: "OpenCV seeks to the requested timestamp of the 3840×2160, 24 fps recording and reads the native frame.",
+    step: 1,
+    title: "Take a traffic video",
+    body: "The project uses a recording of a four-road crossing filmed from above. It is a video, not a live camera.",
   },
   {
-    step: "02",
-    title: "YOLOv8n detection",
-    body: "Stock COCO weights detect cars, motorcycles, buses and trucks at 640 px inference size on CPU.",
+    step: 2,
+    title: "Let the AI look at a picture",
+    body: "A video is many pictures shown quickly. The AI looks at one picture at a time, just like you would look at a photo.",
   },
   {
-    step: "03",
-    title: "Approach assignment",
-    body: "Each box centre is tested against four calibrated polygons that cover only the incoming carriageways.",
+    step: 3,
+    title: "Find the vehicles",
+    body: "The AI draws a box around each car, motorcycle, bus and truck it finds, and says what type it is.",
   },
   {
-    step: "04",
-    title: "Estimate & recommend",
-    body: "Weighted demand is normalised by approach capacity, then the signal controller recommends the next phase.",
+    step: 4,
+    title: "Work out how busy each road is",
+    body: "Each vehicle is given to one of four roads — North, South, East or West. Bigger vehicles count for more because they take more space.",
+  },
+  {
+    step: 5,
+    title: "Suggest a smarter green light",
+    body: "The road with the most traffic gets the next green light. But a road that has waited too long always gets a turn, so nobody is forgotten.",
+  },
+];
+
+const WORDS = [
+  {
+    icon: "spark",
+    word: "Artificial Intelligence (AI)",
+    meaning: "A computer doing something that normally needs a human brain, like recognising a car in a photo.",
+  },
+  {
+    icon: "cpu",
+    word: "Machine Learning",
+    meaning: "A way of making AI: instead of writing rules, we show the computer thousands of examples and it learns the pattern.",
+  },
+  {
+    icon: "video",
+    word: "Computer Vision",
+    meaning: "The part of AI that understands pictures and videos. Face unlock on a phone uses it.",
+  },
+  {
+    icon: "car",
+    word: "Detection box",
+    meaning: "A rectangle drawn around something the AI found. It is the computer saying “I think a vehicle is here”.",
+  },
+  {
+    icon: "road",
+    word: "Congestion",
+    meaning: "How crowded a road is. In this project it is estimated from one picture, not measured by sensors in the road.",
+  },
+  {
+    icon: "signals",
+    word: "Smart signal",
+    meaning: "A traffic light that changes its timing based on the traffic it can see, instead of following a fixed clock.",
+  },
+  {
+    icon: "simulation",
+    word: "Simulation",
+    meaning: "A computer model of traffic. It lets us test an idea safely, without touching a real road.",
+  },
+  {
+    icon: "clock",
+    word: "Waiting time",
+    meaning: "How long a vehicle has to wait before it can cross. Lower waiting time means a better signal.",
   },
 ];
 
@@ -27,92 +75,174 @@ export default function About() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="About the Project"
-        description="An educational prototype that connects computer-vision detection, a snapshot congestion model, a rule-based signal recommender and a queueing simulation."
+        eyebrow="Learn"
+        title="How does this project work?"
+        description="No technical knowledge needed. Here is the whole idea in five steps, plus simple explanations of the words you will see on the other pages."
       >
-        <span className="rounded-full border border-warning/40 bg-warning/10 px-3 py-1 text-[11px] text-warning">
-          Exhibition prototype — not for road control
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/40 bg-warning/10 px-3 py-1 text-[11px] text-warning">
+          <Icon name="alert" className="h-3.5 w-3.5" />
+          Learning prototype — not for real roads
         </span>
       </PageHeader>
 
-      <Card title="Processing pipeline" subtitle="Every stage runs locally on the project's own footage and models.">
-        <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {PIPELINE.map((stage) => (
-            <li key={stage.step} className="rounded-lg border border-border/70 bg-panel/40 p-4">
-              <p className="font-mono text-xs text-cyan">{stage.step}</p>
-              <h3 className="mt-1 text-sm font-semibold text-ink">{stage.title}</h3>
-              <p className="mt-1 text-xs leading-relaxed text-muted">{stage.body}</p>
-            </li>
+      <Callout icon="bulb" title="The big idea">
+        A normal traffic light follows a clock: North 30 seconds, East 30 seconds, and so on, all day.
+        This project asks a simple question — <strong>what if the light could see the road?</strong> If
+        one road is full and another is empty, the full road should get more green time, while the
+        empty road still gets its turn later.
+      </Callout>
+
+      <Card title="Five steps" subtitle="Follow the journey of one traffic video.">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          {STEPS.map((stage) => (
+            <StepCard key={stage.step} step={stage.step} title={stage.title}>
+              {stage.body}
+            </StepCard>
           ))}
-        </ol>
+        </div>
       </Card>
 
+      <section aria-labelledby="words">
+        <h2 id="words" className="mb-3 text-lg font-semibold text-ink">
+          Words you will hear
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {WORDS.map((item) => (
+            <div key={item.word} className="card card-pad">
+              <div className="flex items-center gap-2">
+                <span className="grid h-8 w-8 place-items-center rounded-lg border border-cyan/30 bg-cyan/10 text-cyan">
+                  <Icon name={item.icon} className="h-4 w-4" />
+                </span>
+                <h3 className="text-sm font-semibold text-ink">{item.word}</h3>
+              </div>
+              <p className="mt-2 text-[13px] leading-relaxed text-muted">{item.meaning}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card title="What the system actually does" subtitle="Verified behaviour of this build.">
-          <ul className="list-disc space-y-2 pl-4 text-xs leading-relaxed text-muted">
-            <li>Detects four COCO vehicle classes in a single frame of recorded footage.</li>
-            <li>Assigns each detection to one of four approaches using calibrated polygons.</li>
-            <li>Estimates a screenshot-style congestion level per approach from weighted demand.</li>
-            <li>Recommends the next green phase with minimum/maximum green and maximum-wait fairness.</li>
-            <li>Simulates fixed-time versus adaptive control over the same arrivals, across seeds.</li>
-            <li>Renders an annotated sample video with lane polygons, boxes and per-approach counts.</li>
+        <Card title="Why do traffic jams happen?" subtitle="Simple reasons you see every day.">
+          <ul className="space-y-2 text-[13px] leading-relaxed text-muted">
+            {[
+              "Too many vehicles want the same road at the same time, especially at school and office hours.",
+              "A signal keeps a green light on an empty road while a crowded road waits.",
+              "An accident, a broken-down vehicle or road work blocks part of the road.",
+              "Rain makes drivers slower and leaves bigger gaps between vehicles.",
+              "One road is very busy while the other three are almost empty.",
+            ].map((reason) => (
+              <li key={reason} className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan" />
+                {reason}
+              </li>
+            ))}
           </ul>
         </Card>
 
-        <Card title="What it does not do" subtitle="Stated plainly, so nothing is overclaimed.">
-          <ul className="list-disc space-y-2 pl-4 text-xs leading-relaxed text-muted">
-            <li>It does not use a custom-trained traffic model; the weights are stock YOLOv8n COCO.</li>
-            <li>It does not track vehicles between frames, so it cannot count unique vehicles or direction of travel.</li>
-            <li>It does not measure real queues, speeds, density or delay — congestion is a snapshot estimate.</li>
-            <li>It cannot read a live camera feed; the input is prerecorded MP4 footage.</li>
-            <li>The signal output is a recommendation, not a certified signal plan or controller.</li>
-            <li>Simulation results are synthetic and are never mixed with measured values.</li>
+        <Card title="How a smart signal can help" subtitle="It reacts to what is actually there.">
+          <ul className="space-y-2 text-[13px] leading-relaxed text-muted">
+            {[
+              "It gives more green time to the road with the most vehicles.",
+              "It gives less time to an almost empty road, so nobody waits for nothing.",
+              "It never lets a road wait longer than 45 seconds without a turn.",
+              "It keeps green time inside safe limits (12 to 45 seconds).",
+              "It can explain its choice, so you can check whether it makes sense.",
+            ].map((benefit) => (
+              <li key={benefit} className="flex gap-2">
+                <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                {benefit}
+              </li>
+            ))}
           </ul>
         </Card>
       </div>
 
-      <Card title="Detection limitations" subtitle="Measured on this footage.">
+      <div className="grid gap-4 xl:grid-cols-2">
+        <Card title="What this project can do" subtitle="Checked behaviour of this build.">
+          <ul className="space-y-2 text-[13px] leading-relaxed text-muted">
+            {[
+              "Find cars, motorcycles, buses and trucks in a recorded frame.",
+              "Decide which of the four roads each vehicle is on, using measured road areas.",
+              "Estimate how busy each road is from the vehicles it can see.",
+              "Suggest the next green light and explain why.",
+              "Compare an old fixed timer with the smart signal in a fair simulation.",
+              "Build a report from several moments of the video.",
+            ].map((item) => (
+              <li key={item} className="flex gap-2">
+                <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Card>
+
+        <Card title="What it cannot do" subtitle="Stated plainly, so nothing is overclaimed.">
+          <ul className="space-y-2 text-[13px] leading-relaxed text-muted">
+            {[
+              "It does not use a live camera; the input is a recorded video file.",
+              "It does not track vehicles between pictures, so it cannot count different cars.",
+              "It does not measure real queues, speed or delay — “how busy” is an estimate from one picture.",
+              "It does not control a real traffic light. It only suggests a phase.",
+              "It uses a ready-made model that was not trained on this camera angle, so it misses vehicles.",
+              "Its simulation results are pretend traffic, not measurements from a real road.",
+            ].map((item) => (
+              <li key={item} className="flex gap-2">
+                <Icon name="alert" className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      <Card
+        title="How well does the AI see?"
+        subtitle="Honest numbers from testing this footage."
+      >
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-border/70 bg-panel/40 p-4">
-            <p className="font-mono text-lg text-ink">~8</p>
-            <p className="mt-1 text-xs text-muted">
-              detections on a frame where roughly 35–40 approach vehicles are visible
+          <div className="rounded-xl border border-border/70 bg-panel/40 p-4">
+            <p className="font-mono text-2xl text-ink">~6</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              vehicles found on a frame where a person would count roughly 35–40
             </p>
           </div>
-          <div className="rounded-lg border border-border/70 bg-panel/40 p-4">
-            <p className="font-mono text-lg text-ink">0.10</p>
-            <p className="mt-1 text-xs text-muted">
-              default confidence; higher thresholds find almost nothing on this camera angle
+          <div className="rounded-xl border border-border/70 bg-panel/40 p-4">
+            <p className="font-mono text-2xl text-ink">0.10</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              confidence cut-off; a stricter value finds almost nothing from this camera angle
             </p>
           </div>
-          <div className="rounded-lg border border-border/70 bg-panel/40 p-4">
-            <p className="font-mono text-lg text-ink">~200 ms</p>
-            <p className="mt-1 text-xs text-muted">
-              original local benchmark: CPU inference per 4K frame at 1920 px
+          <div className="rounded-xl border border-border/70 bg-panel/40 p-4">
+            <p className="font-mono text-2xl text-ink">~200 ms</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              time for the AI to check one 4K picture on a normal laptop processor
             </p>
           </div>
         </div>
         <div className="mt-4">
-          <Note tone="warn">
-            A larger checkpoint (YOLOv8s) was measured on the same frames and returned fewer boxes
-            (13 vs 31 over four frames) at roughly 2.5× the cost, so the nano model is kept. Low
-            recall is a property of the footage and the stock model, not of the lane configuration.
-          </Note>
+          <Explain summary="Why does it miss so many vehicles?">
+            <p>
+              The AI model (YOLOv8n) learned from ordinary photos taken at street level. From above, a
+              car looks like a small rectangle, often partly hidden by trees or other vehicles. The model
+              still finds some vehicles, but not all. Training a new model on top-down traffic pictures
+              is the biggest improvement planned for the future.
+            </p>
+          </Explain>
         </div>
       </Card>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card title="Technology" subtitle="Everything runs on this machine.">
+        <Card title="Technology used" subtitle="Everything runs on this computer.">
           <dl className="grid grid-cols-2 gap-3 text-xs">
             {[
-              ["Detection", "Ultralytics YOLOv8n"],
-              ["Vision", "OpenCV"],
-              ["API", "FastAPI + Uvicorn"],
-              ["Frontend", "React + TypeScript + Tailwind"],
+              ["Vehicle detection", "YOLOv8n"],
+              ["Video reading", "OpenCV"],
+              ["Backend API", "FastAPI"],
+              ["Dashboard", "React + TypeScript"],
+              ["Styling", "Tailwind CSS"],
               ["Charts", "Recharts"],
-              ["Video encode", "imageio-ffmpeg (H.264)"],
-              ["Simulation", "Python queueing model"],
-              ["Legacy UI", "Streamlit dashboard retained"],
+              ["Simulation", "Python traffic model"],
+              ["Video encoding", "FFmpeg"],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="text-muted">{label}</dt>
@@ -122,30 +252,29 @@ export default function About() {
           </dl>
         </Card>
 
-        <Card title="Hardware &amp; performance" subtitle="CPU-only by design.">
-          <p className="text-xs leading-relaxed text-muted">
-            The project targets a CPU-only PyTorch install: Intel Core i7, 16 GB RAM, no CUDA. A
-            3840×2160 frame is letterboxed to 1920 px for inference, which takes roughly 200 ms per
-            frame; previews are downscaled to 1280 px JPEG so the browser never loads the full 4K
-            image. The detector is created once per process and reused by every request.
+        <Card title="How the simulation stays fair" subtitle="Same traffic, two signals.">
+          <p className="text-[13px] leading-relaxed text-muted">
+            The simulation creates pretend vehicles and sends <strong className="text-ink">exactly the
+            same vehicles</strong> to both signals. It then measures how long each vehicle waited. The
+            only difference is how the green light was chosen.
           </p>
-          <p className="mt-3 text-xs leading-relaxed text-muted">
-            Video analysis of the 37 s clip is a one-off 3–4 minute render and is not repeated per
-            page load.
+          <p className="mt-3 text-[13px] leading-relaxed text-muted">
+            The project also repeats the test with ten different traffic patterns, so a single lucky
+            result cannot fool you.
           </p>
           <div className="mt-4">
-            <Note>
-              If CUDA becomes available, pass <span className="font-mono">device="cuda"</span> to{" "}
-              <span className="font-mono">VehicleDetector</span>; nothing else needs to change.
+            <Note tone="warn">
+              Simulation numbers are <strong>not</strong> measurements from a real city road. They are
+              produced by a mathematical model inside this project.
             </Note>
           </div>
         </Card>
       </div>
 
       <Note tone="warn">
-        This dashboard is an exhibition prototype. Detection, congestion levels, signal
-        recommendations and simulation results are approximations for demonstration and learning —
-        they are not measurements of a real intersection and must not be used to control traffic.
+        This dashboard is a school exhibition prototype. Detection, congestion estimates, signal
+        suggestions and simulation results are approximations for learning. They must never be used to
+        control real traffic.
       </Note>
     </div>
   );
